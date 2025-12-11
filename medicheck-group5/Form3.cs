@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 using static Humanizer.In;
+using System.Drawing.Drawing2D; // For standard brushes if needed
 
 namespace medicheck_group5
 {
@@ -47,7 +48,36 @@ namespace medicheck_group5
             // Initialize Calendar
             SetupWeeklyCalendar();
             // Load Today's Meds by default
+            // Load Today's Meds by default
             LoadMedicationsForDate(DateTime.Today);
+            
+            // --- Sidebar Wiring ---
+            // History: Show separate Form (consistent design request)
+            // History: Show separate Form (consistent design request)
+            this.bttnHistory.Click += (s, ev) => { 
+                new FormHistory(loggedInUserId, this).Show(); 
+                this.Hide(); 
+            };
+            this.button8.Click += (s, ev) => { 
+                new FormHistory(loggedInUserId, this).Show(); 
+                this.Hide(); 
+            };
+            
+            // Calendar (Placeholder or feature)
+            this.bttnCalendar.Click += (s, ev) => { MessageBox.Show("Full Calendar View coming soon!"); };
+            this.button6.Click += (s, ev) => { MessageBox.Show("Full Calendar View coming soon!"); };
+            
+            // Settings
+            this.button1.Click += (s, ev) => { MessageBox.Show("Settings coming soon!"); };
+            this.button3.Click += (s, ev) => { MessageBox.Show("Settings coming soon!"); };
+
+            // About
+            this.button5.Click += (s, ev) => { MessageBox.Show("MediCheck v1.0\nCreated by Group 5"); };
+            this.button7.Click += (s, ev) => { MessageBox.Show("MediCheck v1.0\nCreated by Group 5"); };
+
+            // Home: Hide other panels, show dashboard
+            this.bttnHome.Click += (s, ev) => { RefreshDashboard(); };
+            this.button2.Click += (s, ev) => { RefreshDashboard(); };
         }
 
         private void CountdownTimer_Tick(object sender, EventArgs e)
@@ -62,17 +92,22 @@ namespace medicheck_group5
         // ------------------- COMING UP -------------------
         private void LoadComingUpMedication()
         {
+            var takenIds = GetTakenMedicationIdsForDate(DateTime.Today);
+
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
                 con.Open();
 
                 string sql = @"
-            SELECT Id, Name, Dosage, TimeToTake
+            SELECT Id, Name, Dosage, TimeToTake, StartDate, EndDate
             FROM Medications
-            WHERE UserID = @uid";
+            WHERE UserID = @uid
+            AND (StartDate IS NULL OR StartDate <= @today)
+            AND (EndDate IS NULL OR EndDate >= @today)";
 
                 SqlCommand cmd = new SqlCommand(sql, con);
                 cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                cmd.Parameters.AddWithValue("@today", DateTime.Today);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
@@ -103,6 +138,9 @@ namespace medicheck_group5
                         Occurrence: occurrence
                     ));
                 }
+
+                // Filter out taken medications
+                candidates = candidates.Where(c => !takenIds.Contains(c.Id)).ToList();
 
                 reader.Close();
 
@@ -247,15 +285,30 @@ namespace medicheck_group5
                 takenCmd.Parameters.AddWithValue("@uid", loggedInUserId);
                 lblTaken.Text = (takenCmd.ExecuteScalar() ?? 0).ToString();
 
-                string scheduledQuery = @"
-                    SELECT COUNT(*) FROM Medications
-                    WHERE UserID = @uid AND CAST(TimeToTake AS DATE) = CAST(GETDATE() AS DATE)";
-                SqlCommand scheduledCmd = new SqlCommand(scheduledQuery, con);
-                scheduledCmd.Parameters.AddWithValue("@uid", loggedInUserId);
-                int scheduledToday = (int)(scheduledCmd.ExecuteScalar() ?? 0);
-                int takenToday = int.Parse(lblTaken.Text);
-                int missedToday = scheduledToday - takenToday;
-                lblMissed.Text = missedToday >= 0 ? missedToday.ToString() : "0";
+                try
+                {
+                    // Fixed Query: Check if today falls between StartDate and EndDate (handle NULL EndDate as 'ongoing')
+                    string scheduledQuery = @"
+                        SELECT COUNT(*) FROM Medications
+                        WHERE UserID = @uid 
+                        AND (StartDate IS NULL OR StartDate <= CAST(GETDATE() AS DATE))
+                        AND (EndDate IS NULL OR EndDate >= CAST(GETDATE() AS DATE))";
+                    
+                    SqlCommand scheduledCmd = new SqlCommand(scheduledQuery, con);
+                    scheduledCmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                    int scheduledToday = (int)(scheduledCmd.ExecuteScalar() ?? 0);
+                    
+                    int takenToday = 0;
+                    int.TryParse(lblTaken.Text, out takenToday);
+                    
+                    int missedToday = scheduledToday - takenToday;
+                    lblMissed.Text = missedToday >= 0 ? missedToday.ToString() : "0";
+                }
+                catch (Exception ex)
+                {
+                   // Fail silently slightly better or show error for debugging
+                   MessageBox.Show("Error loading stats: " + ex.Message);
+                }
 
                 con.Close();
             }
@@ -300,8 +353,9 @@ namespace medicheck_group5
             if (sidebarExpand)
             {
                 sidebar.Width -= 10;
-                if (sidebar.Width == sidebar.MinimumSize.Width)
+                if (sidebar.Width <= sidebar.MinimumSize.Width)
                 {
+                    sidebar.Width = sidebar.MinimumSize.Width; // Snap to min
                     sidebarExpand = false;
                     sidebarTimer.Stop();
                 }
@@ -309,8 +363,9 @@ namespace medicheck_group5
             else
             {
                 sidebar.Width += 10;
-                if (sidebar.Width == sidebar.MaximumSize.Width)
+                if (sidebar.Width >= sidebar.MaximumSize.Width)
                 {
+                    sidebar.Width = sidebar.MaximumSize.Width; // Snap to max
                     sidebarExpand = true;
                     sidebarTimer.Stop();
                 }
@@ -323,12 +378,21 @@ namespace medicheck_group5
         }
 
         // ------------------- OPEN MEDICATION FORM -------------------
+        // ------------------- OPEN MEDICATION FORM -------------------
         private void bttnMedication_Click(object sender, EventArgs e)
         {
             // If you want to open Form4 for general medication management (no specific medId)
-            Form4 medication = new Form4(loggedInUserId, -1); // Pass -1 or a default value for medId
+            Form4 medication = new Form4(loggedInUserId, -1, this); // Pass this instance
             medication.Show();
             this.Hide();
+        }
+
+        public void RefreshDashboard()
+        {
+             LoadStats();
+             LoadComingUpMedication();
+             LoadWeeklyProgress();
+             LoadMedicationsForDate(DateTime.Today);
         }
 
         private void LoadWeeklyProgress()
@@ -344,17 +408,40 @@ namespace medicheck_group5
                 DateTime weekEnd = weekStart.AddDays(6);       // Sunday
 
                 // Total meds scheduled for this week
-                string totalQuery = @"
-            SELECT COUNT(*) 
-            FROM Medications
-            WHERE UserID = @uid
-            AND CAST(TimeToTake AS DATE) BETWEEN @start AND @end
-        ";
-                SqlCommand totalCmd = new SqlCommand(totalQuery, con);
-                totalCmd.Parameters.AddWithValue("@uid", loggedInUserId);
-                totalCmd.Parameters.AddWithValue("@start", weekStart);
-                totalCmd.Parameters.AddWithValue("@end", weekEnd);
-                int totalWeek = (int)(totalCmd.ExecuteScalar() ?? 0);
+                // Total meds scheduled for this week (Calculated in C# to handle date ranges)
+                int totalWeek = 0;
+                string schedQuery = "SELECT StartDate, EndDate, Frequency FROM Medications WHERE UserID = @uid";
+                
+                using (SqlCommand schedCmd = new SqlCommand(schedQuery, con))
+                {
+                    schedCmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                    using (SqlDataReader r = schedCmd.ExecuteReader())
+                    {
+                        while (r.Read())
+                        {
+                            // Parse dates, handle nulls if necessary (though Meds usually have StartDate)
+                            DateTime start = r["StartDate"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(r["StartDate"]);
+                            DateTime end = r["EndDate"] == DBNull.Value ? DateTime.MaxValue : Convert.ToDateTime(r["EndDate"]);
+                            string freq = r["Frequency"].ToString(); 
+
+                            // Calculate overlap with this week
+                            // Iterate through each day of the current week
+                            for (int i = 0; i < 7; i++)
+                            {
+                                DateTime dayToCheck = weekStart.AddDays(i);
+                                
+                                // Check if this day is within the medication's active period
+                                if (dayToCheck >= start && dayToCheck <= end)
+                                {
+                                    // For now, assume 'Daily' means 1 per day.
+                                    // If you have '2x a day' etc, you'd parse 'freq' string here.
+                                    // Assuming 1 dose per active day for simplicity as per current 'Frequency' inputs
+                                    totalWeek++;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Taken this week
                 string takenQuery = @"
@@ -407,12 +494,12 @@ namespace medicheck_group5
             {
                 con.Open();
                 // Check simple date range overlap
-                string sql = @"
+                    string sql = @"
                     SELECT Id, Name, Dosage, TimeToTake, StartDate, EndDate
                     FROM Medications
                     WHERE UserID = @uid
-                    AND StartDate <= @date
-                    AND EndDate >= @date";
+                    AND (StartDate IS NULL OR StartDate <= @date)
+                    AND (EndDate IS NULL OR EndDate >= @date)";
                 
                 using (SqlCommand cmd = new SqlCommand(sql, con))
                 {
@@ -595,7 +682,7 @@ namespace medicheck_group5
                     Text = med.Name,
                     Font = rowFont,
                     Location = new Point(5, 10),
-                    Width = 90,
+                    Width = 85, // Slightly reduced
                     AutoSize = false
                 };
 
@@ -603,8 +690,8 @@ namespace medicheck_group5
                 {
                     Text = med.Dosage,
                     Font = rowFont,
-                    Location = new Point(90, 10),
-                    Width = 55,
+                    Location = new Point(95, 10), // Shifted
+                    Width = 50,
                     AutoSize = false
                 };
 
@@ -612,8 +699,8 @@ namespace medicheck_group5
                 {
                     Text = med.TimeToTake.ToString("hh:mm tt"),
                     Font = rowFont,
-                    Location = new Point(145, 10),
-                    Width = 65,
+                    Location = new Point(150, 10), // Shifted
+                    Width = 60,
                     AutoSize = false
                 };
 
@@ -623,8 +710,8 @@ namespace medicheck_group5
                     {
                         Text = "Taken",
                         Font = rowFont,
-                        Location = new Point(210, 10),
-                        Width = 55,
+                        Location = new Point(220, 10), // Shifted
+                        Width = 50,
                         AutoSize = false,
                         ForeColor = Color.Green
                     };
@@ -638,8 +725,8 @@ namespace medicheck_group5
                     {
                         Text = "Take",
                         Font = new Font("Jaldi", 8, FontStyle.Bold),
-                        Location = new Point(210, 5),
-                        Width = 60,
+                        Location = new Point(215, 5), // Shifted slightly right to be safe
+                        Width = 80, // Widened per user request
                         Height = 30,
                         BorderRadius = 10,
                         FillColor = Color.Teal,
@@ -709,11 +796,14 @@ namespace medicheck_group5
                     Cursor = Cursors.Hand
                 };
                 
-                // Click event to load meds
-                dayPanel.Click += (s, e) => {
+                // Click Logic Wrapper
+                EventHandler handleDayClick = (s, e) => {
                     LoadMedicationsForDate(dayDate);
                     SetupWeeklyCalendar(); // Re-render to update selection highlight
                 };
+
+                // Assign logic to Panel
+                dayPanel.Click += handleDayClick;
 
                 // Day Name (Mon)
                 Label lblDay = new Label
@@ -725,7 +815,7 @@ namespace medicheck_group5
                     Width = size,
                     TextAlign = ContentAlignment.MiddleCenter
                 };
-                lblDay.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+                lblDay.Click += handleDayClick;
 
                 // Date Num (12)
                 Label lblNum = new Label
@@ -737,7 +827,7 @@ namespace medicheck_group5
                     Width = size,
                     TextAlign = ContentAlignment.MiddleCenter
                 };
-                lblNum.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+                lblNum.Click += handleDayClick;
 
                 dayPanel.Controls.Add(lblDay);
                 dayPanel.Controls.Add(lblNum);
@@ -756,7 +846,7 @@ namespace medicheck_group5
                      gp.AddEllipse(0, 0, 6, 6);
                      indicator.Region = new Region(gp);
                      
-                     indicator.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+                     indicator.Click += handleDayClick;
                      dayPanel.Controls.Add(indicator);
                 }
 
@@ -771,11 +861,16 @@ namespace medicheck_group5
              using (SqlConnection con = new SqlConnection(ConnectionString))
              {
                  con.Open();
-                 string sql = "SELECT COUNT(*) FROM Medications WHERE UserID = @uid AND StartDate <= @date AND EndDate >= @date";
+                 string sql = @"
+                     SELECT COUNT(*) FROM Medications 
+                     WHERE UserID = @uid 
+                     AND (StartDate IS NULL OR StartDate <= @date)
+                     AND (EndDate IS NULL OR EndDate >= @date)";
+                 
                  using (SqlCommand cmd = new SqlCommand(sql, con))
                  {
                      cmd.Parameters.AddWithValue("@uid", loggedInUserId);
-                     cmd.Parameters.AddWithValue("@date", date);
+                     cmd.Parameters.AddWithValue("@date", date.Date); // Use .Date just to be safe
                      int count = (int)cmd.ExecuteScalar();
                      return count > 0;
                  }

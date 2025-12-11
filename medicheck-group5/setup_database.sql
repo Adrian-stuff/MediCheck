@@ -1,6 +1,12 @@
--- Create Database
--- CREATE DATABASE MediCheck_Login;
--- USE MediCheck_Login;
+-- Create Database if it doesn't exist
+IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'MediCheck_Login')
+BEGIN
+    CREATE DATABASE MediCheck_Login;
+END
+GO
+
+USE MediCheck_Login;
+GO
 
 -- Users Table
 CREATE TABLE UsersTable (

@@ -169,11 +169,11 @@
             // 
             this.label20.AutoSize = true;
             this.label20.BackColor = System.Drawing.Color.Transparent;
-            this.label20.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label20.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label20.Location = new System.Drawing.Point(332, 239);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(43, 20);
+            this.label20.Size = new System.Drawing.Size(41, 18);
             this.label20.TabIndex = 18;
             this.label20.Text = "Total";
             // 
@@ -181,11 +181,11 @@
             // 
             this.label19.AutoSize = true;
             this.label19.BackColor = System.Drawing.Color.Transparent;
-            this.label19.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label19.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label19.Location = new System.Drawing.Point(173, 239);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(82, 20);
+            this.label19.Size = new System.Drawing.Size(78, 18);
             this.label19.TabIndex = 17;
             this.label19.Text = "Remaining";
             this.label19.Click += new System.EventHandler(this.label19_Click);
@@ -194,11 +194,11 @@
             // 
             this.label18.AutoSize = true;
             this.label18.BackColor = System.Drawing.Color.Transparent;
-            this.label18.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label18.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label18.Location = new System.Drawing.Point(46, 239);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(51, 20);
+            this.label18.Size = new System.Drawing.Size(49, 18);
             this.label18.TabIndex = 10;
             this.label18.Text = "Taken";
             // 
@@ -206,11 +206,11 @@
             // 
             this.lblWeeklyTotal.AutoSize = true;
             this.lblWeeklyTotal.BackColor = System.Drawing.Color.Transparent;
-            this.lblWeeklyTotal.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWeeklyTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWeeklyTotal.ForeColor = System.Drawing.Color.LightSeaGreen;
             this.lblWeeklyTotal.Location = new System.Drawing.Point(332, 204);
             this.lblWeeklyTotal.Name = "lblWeeklyTotal";
-            this.lblWeeklyTotal.Size = new System.Drawing.Size(41, 31);
+            this.lblWeeklyTotal.Size = new System.Drawing.Size(41, 29);
             this.lblWeeklyTotal.TabIndex = 16;
             this.lblWeeklyTotal.Text = "30";
             // 
@@ -218,11 +218,11 @@
             // 
             this.lblWeeklyRemaining.AutoSize = true;
             this.lblWeeklyRemaining.BackColor = System.Drawing.Color.Transparent;
-            this.lblWeeklyRemaining.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWeeklyRemaining.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWeeklyRemaining.ForeColor = System.Drawing.Color.LightSeaGreen;
             this.lblWeeklyRemaining.Location = new System.Drawing.Point(199, 204);
             this.lblWeeklyRemaining.Name = "lblWeeklyRemaining";
-            this.lblWeeklyRemaining.Size = new System.Drawing.Size(28, 31);
+            this.lblWeeklyRemaining.Size = new System.Drawing.Size(27, 29);
             this.lblWeeklyRemaining.TabIndex = 15;
             this.lblWeeklyRemaining.Text = "6";
             // 
@@ -230,11 +230,11 @@
             // 
             this.lblWeeklyTaken.AutoSize = true;
             this.lblWeeklyTaken.BackColor = System.Drawing.Color.Transparent;
-            this.lblWeeklyTaken.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWeeklyTaken.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWeeklyTaken.ForeColor = System.Drawing.Color.LightSeaGreen;
             this.lblWeeklyTaken.Location = new System.Drawing.Point(49, 204);
             this.lblWeeklyTaken.Name = "lblWeeklyTaken";
-            this.lblWeeklyTaken.Size = new System.Drawing.Size(43, 31);
+            this.lblWeeklyTaken.Size = new System.Drawing.Size(41, 29);
             this.lblWeeklyTaken.TabIndex = 14;
             this.lblWeeklyTaken.Text = "24";
             // 
@@ -267,11 +267,11 @@
             // 
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Teal;
             this.label12.Location = new System.Drawing.Point(16, 19);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(204, 31);
+            this.label12.Size = new System.Drawing.Size(211, 29);
             this.label12.TabIndex = 12;
             this.label12.Text = "Weekly Progress";
             this.label12.Click += new System.EventHandler(this.label12_Click);
@@ -327,11 +327,11 @@
             // 
             this.label21.AutoSize = true;
             this.label21.BackColor = System.Drawing.Color.Transparent;
-            this.label21.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label21.ForeColor = System.Drawing.Color.Teal;
             this.label21.Location = new System.Drawing.Point(64, 26);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(131, 31);
+            this.label21.Size = new System.Drawing.Size(137, 29);
             this.label21.TabIndex = 19;
             this.label21.Text = "This Week";
             // 
@@ -401,18 +401,18 @@
             this.panelTodayMeds.ShadowDecoration.Color = System.Drawing.Color.CadetBlue;
             this.panelTodayMeds.ShadowDecoration.Depth = 10;
             this.panelTodayMeds.ShadowDecoration.Enabled = true;
-            this.panelTodayMeds.Size = new System.Drawing.Size(294, 384);
+            this.panelTodayMeds.Size = new System.Drawing.Size(436, 384);
             this.panelTodayMeds.TabIndex = 21;
             // 
             // label22
             // 
             this.label22.AutoSize = true;
             this.label22.BackColor = System.Drawing.Color.Transparent;
-            this.label22.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label22.ForeColor = System.Drawing.Color.Teal;
             this.label22.Location = new System.Drawing.Point(15, 8);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(204, 27);
+            this.label22.Size = new System.Drawing.Size(200, 25);
             this.label22.TabIndex = 19;
             this.label22.Text = "Today\'s Medication";
             // 
@@ -492,12 +492,12 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.MintCream;
             this.label1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1.Location = new System.Drawing.Point(59, 42);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 23);
+            this.label1.Size = new System.Drawing.Size(60, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "  Menu";
             // 
@@ -526,7 +526,7 @@
             // bttnHome
             // 
             this.bttnHome.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bttnHome.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bttnHome.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bttnHome.ForeColor = System.Drawing.Color.MintCream;
             this.bttnHome.Image = global::medicheck_group5.Properties.Resources.home;
             this.bttnHome.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -542,7 +542,7 @@
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.ForeColor = System.Drawing.Color.Aquamarine;
             this.button2.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -567,7 +567,7 @@
             // button5
             // 
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button5.ForeColor = System.Drawing.Color.MintCream;
             this.button5.Image = global::medicheck_group5.Properties.Resources.abtus;
             this.button5.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -583,7 +583,7 @@
             // button7
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button7.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button7.ForeColor = System.Drawing.Color.Aquamarine;
             this.button7.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button7.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -608,7 +608,7 @@
             // bttnMedication
             // 
             this.bttnMedication.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bttnMedication.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bttnMedication.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bttnMedication.ForeColor = System.Drawing.Color.MintCream;
             this.bttnMedication.Image = global::medicheck_group5.Properties.Resources.medication;
             this.bttnMedication.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -625,7 +625,7 @@
             // button4
             // 
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.ForeColor = System.Drawing.Color.Aquamarine;
             this.button4.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button4.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -650,7 +650,7 @@
             // button1
             // 
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.MintCream;
             this.button1.Image = global::medicheck_group5.Properties.Resources.settings;
             this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -666,7 +666,7 @@
             // button3
             // 
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.ForeColor = System.Drawing.Color.Aquamarine;
             this.button3.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -691,7 +691,7 @@
             // bttnCalendar
             // 
             this.bttnCalendar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bttnCalendar.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bttnCalendar.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bttnCalendar.ForeColor = System.Drawing.Color.MintCream;
             this.bttnCalendar.Image = global::medicheck_group5.Properties.Resources.calendar;
             this.bttnCalendar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -707,7 +707,7 @@
             // button6
             // 
             this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button6.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button6.ForeColor = System.Drawing.Color.Aquamarine;
             this.button6.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button6.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -743,7 +743,7 @@
             // bttnHistory
             // 
             this.bttnHistory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bttnHistory.Font = new System.Drawing.Font("Viga", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bttnHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bttnHistory.ForeColor = System.Drawing.Color.MintCream;
             this.bttnHistory.Image = global::medicheck_group5.Properties.Resources.history;
             this.bttnHistory.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -759,7 +759,7 @@
             // button8
             // 
             this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button8.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button8.ForeColor = System.Drawing.Color.Aquamarine;
             this.button8.Image = global::medicheck_group5.Properties.Resources.MEDI_CHECK__10___2_;
             this.button8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -801,11 +801,11 @@
             // 
             this.lblComingTime.AutoSize = true;
             this.lblComingTime.BackColor = System.Drawing.Color.Teal;
-            this.lblComingTime.Font = new System.Drawing.Font("Viga", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblComingTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblComingTime.ForeColor = System.Drawing.Color.MediumTurquoise;
             this.lblComingTime.Location = new System.Drawing.Point(121, 303);
             this.lblComingTime.Name = "lblComingTime";
-            this.lblComingTime.Size = new System.Drawing.Size(142, 27);
+            this.lblComingTime.Size = new System.Drawing.Size(138, 25);
             this.lblComingTime.TabIndex = 9;
             this.lblComingTime.Text = "Time: 9:00 am";
             this.lblComingTime.Click += new System.EventHandler(this.label7_Click_1);
@@ -825,7 +825,7 @@
             // lblComingName
             // 
             this.lblComingName.BackColor = System.Drawing.Color.Teal;
-            this.lblComingName.Font = new System.Drawing.Font("Viga", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblComingName.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblComingName.ForeColor = System.Drawing.Color.MintCream;
             this.lblComingName.Location = new System.Drawing.Point(117, 207);
             this.lblComingName.Name = "lblComingName";
@@ -855,11 +855,11 @@
             // 
             this.lblTaken.AutoSize = true;
             this.lblTaken.BackColor = System.Drawing.Color.Transparent;
-            this.lblTaken.Font = new System.Drawing.Font("Viga", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTaken.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTaken.ForeColor = System.Drawing.Color.MediumSeaGreen;
             this.lblTaken.Location = new System.Drawing.Point(49, 16);
             this.lblTaken.Name = "lblTaken";
-            this.lblTaken.Size = new System.Drawing.Size(33, 37);
+            this.lblTaken.Size = new System.Drawing.Size(31, 32);
             this.lblTaken.TabIndex = 9;
             this.lblTaken.Text = "2";
             // 
@@ -867,11 +867,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label3.Location = new System.Drawing.Point(41, 64);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 20);
+            this.label3.Size = new System.Drawing.Size(49, 18);
             this.label3.TabIndex = 8;
             this.label3.Text = "Taken";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -898,11 +898,11 @@
             // 
             this.lblMissed.AutoSize = true;
             this.lblMissed.BackColor = System.Drawing.Color.Transparent;
-            this.lblMissed.Font = new System.Drawing.Font("Viga", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMissed.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMissed.ForeColor = System.Drawing.Color.Salmon;
             this.lblMissed.Location = new System.Drawing.Point(50, 17);
             this.lblMissed.Name = "lblMissed";
-            this.lblMissed.Size = new System.Drawing.Size(34, 37);
+            this.lblMissed.Size = new System.Drawing.Size(31, 32);
             this.lblMissed.TabIndex = 10;
             this.lblMissed.Text = "0";
             // 
@@ -910,11 +910,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label4.Location = new System.Drawing.Point(37, 64);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 20);
+            this.label4.Size = new System.Drawing.Size(56, 18);
             this.label4.TabIndex = 8;
             this.label4.Text = "Missed";
             this.label4.Click += new System.EventHandler(this.label4_Click_1);
@@ -942,11 +942,11 @@
             // 
             this.lblTotal.AutoSize = true;
             this.lblTotal.BackColor = System.Drawing.Color.Transparent;
-            this.lblTotal.Font = new System.Drawing.Font("Viga", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotal.ForeColor = System.Drawing.Color.LightSeaGreen;
             this.lblTotal.Location = new System.Drawing.Point(48, 16);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(33, 37);
+            this.lblTotal.Size = new System.Drawing.Size(31, 32);
             this.lblTotal.TabIndex = 8;
             this.lblTotal.Text = "5";
             // 
@@ -954,11 +954,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Viga", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkSlateGray;
             this.label2.Location = new System.Drawing.Point(42, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(43, 20);
+            this.label2.Size = new System.Drawing.Size(41, 18);
             this.label2.TabIndex = 7;
             this.label2.Text = "Total";
             // 
@@ -980,18 +980,18 @@
             // 
             this.lblSubGreeting.AutoSize = true;
             this.lblSubGreeting.BackColor = System.Drawing.Color.Transparent;
-            this.lblSubGreeting.Font = new System.Drawing.Font("Viga", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSubGreeting.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSubGreeting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(139)))), ((int)(((byte)(142)))));
             this.lblSubGreeting.Location = new System.Drawing.Point(90, 71);
             this.lblSubGreeting.Name = "lblSubGreeting";
-            this.lblSubGreeting.Size = new System.Drawing.Size(455, 31);
+            this.lblSubGreeting.Size = new System.Drawing.Size(466, 29);
             this.lblSubGreeting.TabIndex = 2;
             this.lblSubGreeting.Text = "Here\'s your medication schedule for today.";
             // 
             // lblGreeting
             // 
             this.lblGreeting.BackColor = System.Drawing.Color.Transparent;
-            this.lblGreeting.Font = new System.Drawing.Font("Viga", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGreeting.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGreeting.ForeColor = System.Drawing.Color.Teal;
             this.lblGreeting.Location = new System.Drawing.Point(87, 26);
             this.lblGreeting.Name = "lblGreeting";

@@ -17,14 +17,17 @@ namespace medicheck_group5
     {
         private int loggedInUserId;
         private int medicationId;
+        private Form3 _parentForm;
+        private bool sidebarExpand = true; // Sidebar state tracking
 
         private readonly string ConnectionString = DatabaseConfig.ConnectionString;
 
-        public Form4(int userId, int medId)
+        public Form4(int userId, int medId, Form3 parent = null)
         {
             InitializeComponent();
             loggedInUserId = userId;
             medicationId = medId;
+            _parentForm = parent;
 
             LoadMedicationDetails();
         }
@@ -99,7 +102,83 @@ namespace medicheck_group5
         }
         private void Form4_Load(object sender, EventArgs e)
         {
+             // Ensure sidebar matches Form3 state if passed? Or independent.
+             // We'll trust its own state.
+             
+             // Manually wire sidebar events based on known Designer names (viewed in Form4.Designer.cs)
+             this.sidebarTimer.Tick += sidebarTimer_Tick;
+             this.menuButton.Click += menuButton_Click;
+             
+             // Navigation
+             this.bttnHome.Click += (s, ev) => GoBackToHome();
+             this.button2.Click += (s, ev) => GoBackToHome(); // "Home" Label/Button
+             this.button4.Click += (s, ev) => GoBackToHome(); // "Home" (Duplicate?)
 
+             this.bttnHistory.Click += (s, ev) => OpenHistory();
+             this.button8.Click += (s, ev) => OpenHistory(); // "Home" (Label says Home but var likely History from copy?)
+             // Note: In Form3 Designer, button8 was associated with History panel. 
+             // In Form4 Designer, button8 text says "Home" in copy-paste? 
+             // Designer view: button8 Text = "Home". bttnHistory Text = "History"
+             // Use button names carefully.
+             
+             // To be safe, rely on the Icon/Name "bttnHistory"
+             
+             this.bttnCalendar.Click += (s, ev) => MessageBox.Show("Calendar View coming soon!");
+        }
+
+        private void GoBackToHome()
+        {
+             if (_parentForm != null)
+             {
+                 _parentForm.RefreshDashboard();
+                 _parentForm.Show();
+             }
+             else
+             {
+                 new Form3(loggedInUserId, "").Show();
+             }
+             this.Close();
+        }
+
+        private void OpenHistory()
+        {
+             // Open History Form. 
+             // If we want "Same as Form4", we open it and Close this one?
+             // Or ShowDialog?
+             // "button doesn't route".
+             // If I navigate "History", I probably leave "Edit Med".
+             new FormHistory(loggedInUserId).Show();
+             this.Close(); // Close current form -> User is now in History. 
+             // Note: FormHistory needs a way back to Home too.
+        }
+
+        private void sidebarTimer_Tick(object sender, EventArgs e)
+        {
+            if (sidebarExpand)
+            {
+                sidebar.Width -= 10;
+                if (sidebar.Width <= sidebar.MinimumSize.Width)
+                {
+                    sidebar.Width = sidebar.MinimumSize.Width;
+                    sidebarExpand = false;
+                    sidebarTimer.Stop();
+                }
+            }
+            else
+            {
+                sidebar.Width += 10;
+                if (sidebar.Width >= sidebar.MaximumSize.Width)
+                {
+                    sidebar.Width = sidebar.MaximumSize.Width;
+                    sidebarExpand = true;
+                    sidebarTimer.Stop();
+                }
+            }
+        }
+
+        private void menuButton_Click(object sender, EventArgs e)
+        {
+            sidebarTimer.Start();
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -195,6 +274,19 @@ namespace medicheck_group5
                     con.Close();
 
                     MessageBox.Show("✅ Medication successfully saved!");
+
+                    if (_parentForm != null)
+                    {
+                        _parentForm.RefreshDashboard();
+                        _parentForm.Show();
+                    }
+                    else
+                    {
+                        // Fallback: create new if for some reason parent is missing (e.g. debugging)
+                        Form3 home = new Form3(loggedInUserId, "");
+                        home.Show();
+                    }
+                    this.Close();
                 }
             }
             catch (Exception ex)
