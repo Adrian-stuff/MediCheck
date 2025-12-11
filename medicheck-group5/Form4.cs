@@ -18,7 +18,7 @@ namespace medicheck_group5
         private int loggedInUserId;
         private int medicationId;
 
-        private readonly string ConnectionString = @"Data Source=STROBERI\SQLEXPRESS;Initial Catalog=MediCheck_Login;Integrated Security=True;TrustServerCertificate=True";
+        private readonly string ConnectionString = DatabaseConfig.ConnectionString;
 
         public Form4(int userId, int medId)
         {
@@ -156,7 +156,7 @@ namespace medicheck_group5
         {
             try
             {
-                string connectionString = @"Data Source=STROBERI\SQLEXPRESS;Initial Catalog=MediCheck_Login;Integrated Security=True;TrustServerCertificate=True";
+                string connectionString = DatabaseConfig.ConnectionString;
 
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {

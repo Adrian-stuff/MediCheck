@@ -121,7 +121,7 @@ namespace medicheck_group5
                 MessageBox.Show("All fields are REQUIRED for registration.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return; // Stop execution if validation fails
             }
-            string connectionString = "Data Source=STROBERI\\SQLEXPRESS;Initial Catalog=MediCheck_Login;Integrated Security=True;TrustServerCertificate=True";
+            string connectionString = DatabaseConfig.ConnectionString;
 
             if (UsernameExists(username, connectionString))
             {

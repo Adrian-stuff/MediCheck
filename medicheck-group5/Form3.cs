@@ -19,7 +19,7 @@ namespace medicheck_group5
         bool sidebarExpand;
         private int loggedInUserId;
         private string loggedInFullName;
-        private const string ConnectionString = @"Data Source=STROBERI\SQLEXPRESS;Initial Catalog=MediCheck_Login;Integrated Security=True;TrustServerCertificate=True";
+        private string ConnectionString = DatabaseConfig.ConnectionString;
         private Timer countdownTimer;
 
         // Parameterized constructor
@@ -44,7 +44,10 @@ namespace medicheck_group5
             countdownTimer.Tick += CountdownTimer_Tick;
             countdownTimer.Start();
 
-            LoadTodaysMedicationsSimple();
+            // Initialize Calendar
+            SetupWeeklyCalendar();
+            // Load Today's Meds by default
+            LoadMedicationsForDate(DateTime.Today);
         }
 
         private void CountdownTimer_Tick(object sender, EventArgs e)
@@ -386,142 +389,397 @@ namespace medicheck_group5
             }
         }
 
-        private void LoadTodaysMedicationsSimple()
+        // Mock Data Class
+        public class MedicationItem
         {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Dosage { get; set; }
+            public DateTime TimeToTake { get; set; }
+        }
+
+        // Helper to get medications for a specific date from DB
+        private List<MedicationItem> GetMedicationsForDate(DateTime date)
+        {
+            var list = new List<MedicationItem>();
+            
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                con.Open();
+                // Check simple date range overlap
+                string sql = @"
+                    SELECT Id, Name, Dosage, TimeToTake, StartDate, EndDate
+                    FROM Medications
+                    WHERE UserID = @uid
+                    AND StartDate <= @date
+                    AND EndDate >= @date";
+                
+                using (SqlCommand cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                    cmd.Parameters.AddWithValue("@date", date.Date);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            object rawTime = reader["TimeToTake"];
+                            if (rawTime == DBNull.Value) continue;
+
+                            DateTime timeToTake;
+                            if (rawTime is TimeSpan ts)
+                            {
+                                timeToTake = date.Date.Add(ts);
+                            }
+                            else
+                            {
+                                DateTime dt = Convert.ToDateTime(rawTime);
+                                timeToTake = date.Date.Add(dt.TimeOfDay);
+                            }
+
+                            list.Add(new MedicationItem
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                Dosage = reader["Dosage"].ToString(),
+                                TimeToTake = timeToTake
+                            });
+                        }
+                    }
+                }
+            }
+            // Sort by time
+            return list.OrderBy(m => m.TimeToTake).ToList();
+        }
+
+        // Helper to get IDs of medications taken on a specific date
+        private HashSet<int> GetTakenMedicationIdsForDate(DateTime date)
+        {
+            var taken = new HashSet<int>();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                con.Open();
+                string sql = @"
+                    SELECT MedicationID 
+                    FROM MedicationsTaken
+                    WHERE UserID = @uid 
+                    AND CAST(DateTaken AS DATE) = CAST(@date AS DATE)";
+
+                using (SqlCommand cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                    cmd.Parameters.AddWithValue("@date", date);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            taken.Add(Convert.ToInt32(reader["MedicationID"]));
+                        }
+                    }
+                }
+            }
+            return taken;
+        }
+
+        // Action to mark medication as taken in DB
+        private void MarkMedicationAsTaken(int medId, DateTime dateOfMed)
+        {
+            // Only allow marking if it's today (or maybe past/future? let's stick to simple logic for now)
+            // But we must record the DateTaken as the date of the med schedule, or Now?
+            // Usually you mark it as taken NOW. 
+            // If viewing past/future, marking as taken might be "backfilling". 
+            // Let's use `DateTime.Now` for timestamp, but ensure we check logic correctly.
+            
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    con.Open();
+                    // We insert the actual time they took it (NOW), but effectively it counts for that day's schedule.
+                    // The query uses CAST(DateTaken AS DATE) = ScheduleDate.
+                    // If I take yesterday's med today, it will show as taken TODAY, not YESTERDAY.
+                    // To support "marking for a specific date", we might need to manipulate DateTaken.
+                    // For now, let's assume we mark it for the passed date.
+                    
+                    DateTime timestamp = dateOfMed.Date == DateTime.Today ? DateTime.Now : dateOfMed.Date.AddHours(12);
+
+                    string sql = "INSERT INTO MedicationsTaken (UserID, MedicationID, DateTaken) VALUES (@uid, @mid, @dt)";
+                    using (SqlCommand cmd = new SqlCommand(sql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                        cmd.Parameters.AddWithValue("@mid", medId);
+                        cmd.Parameters.AddWithValue("@dt", timestamp);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show("Medication marked as taken.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                // Refresh stats and list
+                LoadStats();
+                LoadWeeklyProgress();
+                LoadMedicationsForDate(dateOfMed); // Refresh the specific date view
+                
+                LoadComingUpMedication(); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error marking medication: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Variable to track currently selected date
+        private DateTime _currentSelectedDate = DateTime.Today;
+
+        private void LoadMedicationsForDate(DateTime date)
+        {
+            _currentSelectedDate = date;
+
             panelTodayMeds.Controls.Clear();
             panelTodayMeds.AutoScroll = true;
             panelTodayMeds.SuspendLayout();
 
+            string title = date.Date == DateTime.Today ? "Today's Medication" : $"Meds for {date:MMM dd}";
+
             Label lblTitle = new Label
             {
-                Text = "Today's Medication",
-                Font = new Font("Viga", 12, FontStyle.Bold), // Adjust font/size as needed
-                Location = new Point(5, 5), // Ilagay sa pinaka-itaas
+                Text = title,
+                Font = new Font("Viga", 12, FontStyle.Bold),
+                Location = new Point(5, 5),
                 AutoSize = true,
                 BackColor = Color.Transparent,
                 ForeColor = Color.FromArgb(0, 128, 128) // Teal color
             };
             panelTodayMeds.Controls.Add(lblTitle);
 
-            var todaysTaken = new HashSet<int>();
-            Font rowFont = new Font("Jaldi", 9, FontStyle.Regular);
+            // Fetch Data
+            var meds = GetMedicationsForDate(date);
+            var takenIds = GetTakenMedicationIdsForDate(date);
 
-            // Define spacing variables
+            Font rowFont = new Font("Jaldi", 9, FontStyle.Regular);
             int horizontalMargin = 8;
             int verticalSpacing = 48;
+            int y = 35;
 
-            using (SqlConnection con = new SqlConnection(ConnectionString))
+            // Optional: Message if empty
+            if (meds.Count == 0)
             {
-                con.Open();
-
-                using (SqlCommand cmdTaken = new SqlCommand(
-                    @"SELECT MedicationID FROM MedicationsTaken
-              WHERE UserID = @uid
-              AND CAST(DateTaken AS DATE) = CAST(GETDATE() AS DATE)", con))
+                Label lblEmpty = new Label
                 {
-                    cmdTaken.Parameters.AddWithValue("@uid", loggedInUserId);
+                    Text = "No medications scheduled.",
+                    Font = new Font("Jaldi", 10, FontStyle.Italic),
+                    Location = new Point(horizontalMargin, 40),
+                    AutoSize = true,
+                    ForeColor = Color.Gray
+                };
+                panelTodayMeds.Controls.Add(lblEmpty);
+            }
 
-                    using (var r = cmdTaken.ExecuteReader())
+            foreach (var med in meds)
+            {
+                string status = takenIds.Contains(med.Id) ? "Taken" : "Upcoming";
+                bool isTaken = status == "Taken";
+
+                Panel row = new Panel
+                {
+                    Width = panelTodayMeds.ClientSize.Width - (horizontalMargin * 2),
+                    Height = 40,
+                    Location = new Point(horizontalMargin, y),
+                    BackColor = Color.FromArgb(179, 230, 230) // Light Teal
+                };
+                
+                // ... (Logic to build row similar to before) ...
+                Label lblName = new Label
+                {
+                    Text = med.Name,
+                    Font = rowFont,
+                    Location = new Point(5, 10),
+                    Width = 90,
+                    AutoSize = false
+                };
+
+                Label lblDosage = new Label
+                {
+                    Text = med.Dosage,
+                    Font = rowFont,
+                    Location = new Point(90, 10),
+                    Width = 55,
+                    AutoSize = false
+                };
+
+                Label lblTime = new Label
+                {
+                    Text = med.TimeToTake.ToString("hh:mm tt"),
+                    Font = rowFont,
+                    Location = new Point(145, 10),
+                    Width = 65,
+                    AutoSize = false
+                };
+
+                if (isTaken)
+                {
+                    Label lblStatus = new Label
                     {
-                        while (r.Read())
-                            todaysTaken.Add(Convert.ToInt32(r["MedicationID"]));
-                    }
+                        Text = "Taken",
+                        Font = rowFont,
+                        Location = new Point(210, 10),
+                        Width = 55,
+                        AutoSize = false,
+                        ForeColor = Color.Green
+                    };
+                    row.Controls.Add(lblStatus);
+                }
+                else
+                {
+                     // Only show "Take" button if date is today or present (or past? Maybe allow retroactive taking)
+                     // For now, always allow.
+                    Guna2Button btnTake = new Guna2Button
+                    {
+                        Text = "Take",
+                        Font = new Font("Jaldi", 8, FontStyle.Bold),
+                        Location = new Point(210, 5),
+                        Width = 60,
+                        Height = 30,
+                        BorderRadius = 10,
+                        FillColor = Color.Teal,
+                        ForeColor = Color.White
+                    };
+                    int currentId = med.Id;
+                    DateTime targetDate = date; // Capture closure
+                    btnTake.Click += (s, args) => MarkMedicationAsTaken(currentId, targetDate);
+                    
+                    row.Controls.Add(btnTake);
                 }
 
-                using (SqlCommand cmd = new SqlCommand(
-                    @"SELECT Id, Name, Dosage, TimeToTake
-              FROM Medications
-              WHERE UserID = @uid", con))
-                {
-                    cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                row.Controls.Add(lblName);
+                row.Controls.Add(lblDosage);
+                row.Controls.Add(lblTime);
 
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        int y = 35;
-                        DateTime today = DateTime.Today;
-
-                        while (reader.Read())
-                        {
-                            object raw = reader["TimeToTake"];
-                            if (raw == DBNull.Value)
-                                continue;
-
-                            DateTime occurrence =
-                                raw is TimeSpan ts
-                                    ? today.Add(ts)
-                                    : today.Add(Convert.ToDateTime(raw).TimeOfDay);
-
-                            if (occurrence.Date != today)
-                                continue;
-
-                            int id = Convert.ToInt32(reader["Id"]);
-                            string name = reader["Name"].ToString();
-                            string dosage = reader["Dosage"].ToString();
-                            string status = todaysTaken.Contains(id) ? "Taken" : "Upcoming";
-
-                            Panel row = new Panel
-                            {
-                                // Set width and location with margin
-                                Width = panelTodayMeds.ClientSize.Width - (horizontalMargin * 2),
-                                Height = 40,
-                                Location = new Point(horizontalMargin, y),
-                                BackColor = Color.FromArgb(179, 230, 230) // Light Teal
-                            };
-
-                            Label lblName = new Label
-                            {
-                                Text = name,
-                                Font = rowFont,
-                                Location = new Point(5, 10),
-                                Width = 90,
-                                AutoSize = false
-                            };
-
-                            Label lblDosage = new Label
-                            {
-                                Text = dosage,
-                                Font = rowFont,
-                                // Adjusted X location: 100 -> 90
-                                Location = new Point(90, 10),
-                                Width = 55,
-                                AutoSize = false
-                            };
-
-                            Label lblTime = new Label
-                            {
-                                Text = occurrence.ToString("hh:mm tt"),
-                                Font = rowFont,
-                                // Adjusted X location: 160 -> 145
-                                Location = new Point(145, 10),
-                                Width = 65,
-                                AutoSize = false
-                            };
-
-                            Label lblStatus = new Label
-                            {
-                                Text = status,
-                                Font = rowFont,
-                                // Adjusted X location: 230 -> 210
-                                Location = new Point(210, 10),
-                                Width = 55,
-                                AutoSize = false,
-                                ForeColor = status == "Taken" ? Color.Green : Color.DarkOrange
-                            };
-
-                            row.Controls.Add(lblName);
-                            row.Controls.Add(lblDosage);
-                            row.Controls.Add(lblTime);
-                            row.Controls.Add(lblStatus);
-
-                            panelTodayMeds.Controls.Add(row);
-                            y += verticalSpacing; // Use new vertical spacing for gap
-                        }
-                    }
-                }
+                panelTodayMeds.Controls.Add(row);
+                y += verticalSpacing;
             }
 
             panelTodayMeds.ResumeLayout();
             panelTodayMeds.Refresh();
+        }
+
+        private void SetupWeeklyCalendar()
+        {
+            // Determine current week (Monday start)
+            DateTime today = DateTime.Today;
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            DateTime weekStart = today.AddDays(-1 * diff).Date;
+
+            // Clear dynamic controls from calendarContainer, keep the Header Label/Icon
+            // Assuming pictureBox2 and label21 are the header items.
+            // We can identify them by checking existing controls in Designer or just clearing by type/tag.
+            // But simplified: Remove anything that looks like a day panel? 
+            // Or just append panels at specific Y.
+            
+            // Removing old dynamic panels if re-called
+            var toRemove = new List<Control>();
+            foreach(Control c in calendarContainer.Controls)
+            {
+                if (c is Panel p && p.Tag != null && p.Tag.ToString() == "DayPanel")
+                {
+                    toRemove.Add(c);
+                }
+            }
+            foreach(Control c in toRemove) calendarContainer.Controls.Remove(c);
+
+
+            int startX = 20;
+            int startY = 70;
+            int gap = 10;
+            int size = 50;
+
+            for (int i = 0; i < 7; i++)
+            {
+                DateTime dayDate = weekStart.AddDays(i);
+                bool hasMeds = CheckIfMedsOnDate(dayDate);
+                bool isSelected = dayDate == _currentSelectedDate;
+
+                Panel dayPanel = new Panel
+                {
+                    Size = new Size(size, 70), // Taller to fit indicator
+                    Location = new Point(startX + (i * (size + gap)), startY),
+                    BackColor = isSelected ? Color.FromArgb(200, 240, 240) : Color.Transparent,
+                    Tag = "DayPanel",
+                    Cursor = Cursors.Hand
+                };
+                
+                // Click event to load meds
+                dayPanel.Click += (s, e) => {
+                    LoadMedicationsForDate(dayDate);
+                    SetupWeeklyCalendar(); // Re-render to update selection highlight
+                };
+
+                // Day Name (Mon)
+                Label lblDay = new Label
+                {
+                    Text = dayDate.ToString("ddd"),
+                    Font = new Font("Jaldi", 9, FontStyle.Regular),
+                    ForeColor = Color.Gray,
+                    Location = new Point(0, 5),
+                    Width = size,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                lblDay.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+
+                // Date Num (12)
+                Label lblNum = new Label
+                {
+                    Text = dayDate.Day.ToString(),
+                    Font = new Font("Viga", 10, FontStyle.Bold),
+                    ForeColor = dayDate == DateTime.Today ? Color.Teal : Color.Black,
+                    Location = new Point(0, 25),
+                    Width = size,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                lblNum.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+
+                dayPanel.Controls.Add(lblDay);
+                dayPanel.Controls.Add(lblNum);
+
+                // Green Indicator
+                if (hasMeds)
+                {
+                     Panel indicator = new Panel
+                     {
+                         Size = new Size(6, 6),
+                         BackColor = Color.LimeGreen,
+                         Location = new Point((size - 6) / 2, 55) // Centered bottom
+                     };
+                     // Make it round
+                     System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
+                     gp.AddEllipse(0, 0, 6, 6);
+                     indicator.Region = new Region(gp);
+                     
+                     indicator.Click += (s, e) => dayPanel.InvokeOnClick(dayPanel, EventArgs.Empty);
+                     dayPanel.Controls.Add(indicator);
+                }
+
+                calendarContainer.Controls.Add(dayPanel);
+            }
+        }
+
+        private bool CheckIfMedsOnDate(DateTime date)
+        {
+             // Optimize: In a real app, query the whole week at once. 
+             // For now, simple query per day is acceptable for 7 queries.
+             using (SqlConnection con = new SqlConnection(ConnectionString))
+             {
+                 con.Open();
+                 string sql = "SELECT COUNT(*) FROM Medications WHERE UserID = @uid AND StartDate <= @date AND EndDate >= @date";
+                 using (SqlCommand cmd = new SqlCommand(sql, con))
+                 {
+                     cmd.Parameters.AddWithValue("@uid", loggedInUserId);
+                     cmd.Parameters.AddWithValue("@date", date);
+                     int count = (int)cmd.ExecuteScalar();
+                     return count > 0;
+                 }
+             }
         }
         private void label4_Click(object sender, EventArgs e) { }
         private void label7_Click(object sender, EventArgs e) { }

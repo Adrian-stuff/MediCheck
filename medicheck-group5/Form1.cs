@@ -18,7 +18,7 @@ namespace medicheck_group5
         private Timer slideTimer;
         private Point finalPictureBoxPosition;
         
-        private const string ConnectionString = "Data Source=STROBERI\\SQLEXPRESS;Initial Catalog=MediCheck_Login;Integrated Security=True;TrustServerCertificate=True";
+        private string ConnectionString = DatabaseConfig.ConnectionString;
 
         public Form1()
         {
